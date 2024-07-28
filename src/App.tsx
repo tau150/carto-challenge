@@ -1,14 +1,24 @@
-import "./App.css";
+import { toastConfig } from "react-simple-toasts";
+import { LogoContainer } from "./App.styled";
+import { FlowDataProvider } from "./contexts";
+import { Router } from "./router/Router";
 import cartoLogo from "@/assets/images/carto-logo.webp";
+import "react-simple-toasts/dist/theme/dark.css";
 
-function App() {
+toastConfig({ theme: "dark" });
+
+export const App = () => {
   return (
-    <>
-      <div>
-        <img alt="Carto logo" className="logo react" src={cartoLogo} />
-      </div>
-    </>
+    <div>
+      <header>
+        <LogoContainer>
+          <img alt="Carto logo" className="logo react" src={cartoLogo} />
+        </LogoContainer>
+      </header>
+      <FlowDataProvider>
+        <Router />
+        {/* <FlowPlayground /> */}
+      </FlowDataProvider>
+    </div>
   );
-}
-
-export default App;
+};
