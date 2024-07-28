@@ -1,17 +1,18 @@
-import React, { useEffect, useContext } from "react";
-import { FlowDataProvider, FlowDataContext } from "../FlowDataContext";
-import { render, screen } from "@/utils/testUtils";
+import { useEffect, useContext } from "react";
+import { render, screen } from "@testing-library/react";
+import { FlowDataProvider, FlowDataContext, type FlowDataContextValue } from "../FlowDataContext";
+
 import { NodeType } from "@/modules/flow/domain";
 
 describe("FlowDataContext", () => {
   it("provides default values", () => {
     const TestComponent = () => {
-      const context = React.useContext(FlowDataContext);
+      const { flowData } = useContext(FlowDataContext) as FlowDataContextValue;
 
       return (
         <div>
-          <span>Edges: {context.flowData.edges.length}</span>
-          <span>Nodes: {context.flowData.nodes.length}</span>
+          <span>Edges: {flowData.edges.length}</span>
+          <span>Nodes: {flowData.nodes.length}</span>
         </div>
       );
     };
@@ -26,9 +27,9 @@ describe("FlowDataContext", () => {
     expect(screen.getByText(/Nodes: 0/)).toBeInTheDocument();
   });
 
-  it("updates flowData when setFlowData is called", () => {
+  it("updates flowData when setFlowData is called", async () => {
     const TestComponent = () => {
-      const { flowData, setFlowData } = useContext(FlowDataContext);
+      const { setFlowData, flowData } = useContext(FlowDataContext) as FlowDataContextValue;
 
       useEffect(() => {
         setFlowData({

@@ -13,7 +13,11 @@ export const SidePanel = ({ children }: PropsWithChildren) => {
   return (
     <SidePanelContainer $isCollapsed={isCollapsed}>
       <CollapseIcon $isCollapsed={isCollapsed} onClick={() => setIsCollapsed(!isCollapsed)}>
-        {isCollapsed ? <FaChevronRight /> : <FaChevronLeft />}
+        {isCollapsed ? (
+          <FaChevronRight data-testid="unCollapse-icon" />
+        ) : (
+          <FaChevronLeft data-testid="collapse-icon" />
+        )}
       </CollapseIcon>
       {!isCollapsed && (
         <ContentContainer>

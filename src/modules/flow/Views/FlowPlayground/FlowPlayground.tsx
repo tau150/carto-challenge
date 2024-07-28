@@ -1,12 +1,7 @@
 import "./FlowPlayground.css";
 import { ContentContainer, NodesContainer } from "./FlowPlayground.styled";
 import { FlowContentContainer } from "./FlowPlayground.styled";
-import { Flow } from "@/modules/flow/Components";
-import {
-  SidePanel,
-  SourceNodeCard,
-  NodeCard,
-} from "@/modules/flow/Components/SidePanel/Components";
+import { Flow, SidePanel, SourceNodeCard, NodeCard } from "@/modules/flow/Components";
 import { NodeType } from "@/modules/flow/domain";
 
 export const FlowPlayground = () => {

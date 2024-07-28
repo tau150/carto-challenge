@@ -12,10 +12,12 @@ export interface FlowDataContextValue {
   setFlowData: (flowData: FlowData) => void;
 }
 
-export const FlowDataContext = createContext({
-  flowData: { edges: [], nodes: [] } as FlowData,
-  setFlowData: () => {},
-} as FlowDataContextValue);
+// export const FlowDataContext = createContext<FlowDataContextValue | undefined>({
+//   flowData: { edges: [], nodes: [] },
+//   setFlowData: () => {},
+// });
+
+export const FlowDataContext = createContext<FlowDataContextValue | undefined>(undefined);
 
 export const FlowDataProvider = ({ children }: PropsWithChildren) => {
   const [flowData, setFlowData] = useState<FlowData>({ edges: [], nodes: [] });

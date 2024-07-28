@@ -15,7 +15,11 @@ export const NodeCard = ({ nodeType, children }: PropsWithChildren<Props>) => {
   };
 
   return (
-    <NodeCardContainer draggable onDragStart={(event) => onDragStart(event, nodeType)}>
+    <NodeCardContainer
+      draggable
+      data-testid="node-card"
+      onDragStart={(event) => onDragStart(event, nodeType)}
+    >
       <span className={pointerClassName[nodeType]} />
       <p>{textContent[nodeType]}</p>
       {children}
