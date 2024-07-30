@@ -63,7 +63,12 @@ describe("FlowContent", () => {
 
   beforeEach(() => {
     mockUseLocalStorage.mockReturnValue([[], vi.fn()]);
-    mockUseFlowData.mockReturnValue({ setFlowData: vi.fn() });
+    mockUseFlowData.mockReturnValue({
+      setFlowData: vi.fn(),
+      saveNodes: vi.fn(),
+      saveEdges: vi.fn(),
+      flowData: { nodes: [], edges: [] },
+    });
     mockUseNodeState.mockReturnValue([[], vi.fn(), vi.fn()]);
     mockUseEdgesState.mockReturnValue([[], vi.fn(), vi.fn()]);
     vi.clearAllMocks();

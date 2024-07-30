@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useReactFlow } from "@xyflow/react";
 import { Mock } from "vitest";
 import { SourceNode } from "../SourceNode";
@@ -8,7 +9,6 @@ vi.mock("@xyflow/react", async () => {
   const actual = await vi.importActual("@xyflow/react");
 
   return {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ...(actual as any),
     useReactFlow: vi.fn(),
   };

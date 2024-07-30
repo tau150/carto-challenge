@@ -17,7 +17,6 @@ export const App = () => {
       </header>
       <FlowDataProvider>
         <Router />
-        {/* <FlowPlayground /> */}
       </FlowDataProvider>
     </div>
   );
