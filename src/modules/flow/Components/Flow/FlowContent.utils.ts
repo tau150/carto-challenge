@@ -1,7 +1,5 @@
 import type { NodePosition } from "./Flow.types";
-import { NodeType } from "@/modules/flow/domain";
-import { LayerNodeType } from "@/modules/flow/Components/LayerNode";
-import { SourceNodeType } from "@/modules/flow/Components/SourceNode";
+import { NodeType, LayerNodeType, SourceNodeType } from "@/modules/flow/domain";
 
 const getId = () => `node_${Date.now()}`;
 
@@ -19,13 +17,11 @@ export const getNode = (
   }
 
   if (type === NodeType.SOURCE) {
-    const id = getId();
-
     return {
-      id,
+      id: getId(),
       type,
       position,
-      data: { value: "", id, selected: false },
+      data: { value: "" },
     };
   }
 };

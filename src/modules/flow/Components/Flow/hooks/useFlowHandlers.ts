@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { addEdge, useReactFlow, Connection, Edge } from "@xyflow/react";
 import { DROP_EFFECT } from "../Flow.constants";
 import { getNode } from "../FlowContent.utils";
-import type { AvailableNodes } from "../Flow.types";
+import type { AvailableNodes } from "@/modules/flow/domain";
 import type { NodeType } from "@/modules/flow/domain";
 import { Events } from "@/modules/events/domain";
 

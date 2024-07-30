@@ -11,14 +11,11 @@ import {
 import toast from "react-simple-toasts";
 import { useNavigate } from "react-router-dom";
 import {
-  defaultEdges,
-  defaultNodes,
-  NODES_STORAGE_KEY,
-  EDGES_STORAGE_KEY,
   SUCCESS_SAVE_MESSAGE,
   SUCCESS_AUTO_SAVE_MESSAGE,
   ERROR_SAVE_MESSAGE,
   AUTO_SAVE_INTERVAL,
+  FLOW_BG_COLOR,
 } from "./Flow.constants";
 import { FlowContainer } from "./Flow.styled";
 import { useFlowHandlers } from "./hooks/useFlowHandlers";
@@ -27,18 +24,16 @@ import { LayerNode } from "@/modules/flow/Components/LayerNode";
 import { SourceNode } from "@/modules/flow/Components/SourceNode";
 import { NodeType } from "@/modules/flow/domain";
 import { ControlsPanel } from "@/modules/flow/Components/Flow/Components/ControlsPanel";
-import { useInterval, useFlowData, useLocalStorage } from "@/hooks";
+import { useInterval, useFlowData } from "@/hooks";
 import "@xyflow/react/dist/style.css";
 
 const nodeTypes = { [NodeType.LAYER]: LayerNode, [NodeType.SOURCE]: SourceNode };
 
 export const FlowContent = () => {
-  const [initialNodes, saveNodes] = useLocalStorage(NODES_STORAGE_KEY, defaultNodes);
-  const [initialEdges, saveEdges] = useLocalStorage(EDGES_STORAGE_KEY, defaultEdges);
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const { setFlowData, flowData, saveEdges, saveNodes } = useFlowData();
+  const [nodes, setNodes, onNodesChange] = useNodesState(flowData.nodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(flowData.edges);
   const { onConnect, onDragOver, onDrop } = useFlowHandlers({ setEdges, setNodes });
-  const { setFlowData } = useFlowData();
   const navigate = useNavigate();
 
   useInterval(() => handleSave(true), AUTO_SAVE_INTERVAL);
@@ -78,7 +73,7 @@ export const FlowContent = () => {
         <ControlsPanel onClickMap={handleClickMap} onSave={handleSave} />
         <Controls />
         <MiniMap />
-        <Background color="#112641" gap={12} size={1} variant={BackgroundVariant.Dots} />
+        <Background color={FLOW_BG_COLOR} gap={12} size={1} variant={BackgroundVariant.Dots} />
       </ReactFlow>
     </FlowContainer>
   );

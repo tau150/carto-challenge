@@ -25,7 +25,7 @@ describe("getNode", () => {
       id: `node_${1625152800000}`,
       type: NodeType.SOURCE,
       position,
-      data: { value: "", id: `node_${1625152800000}`, selected: false },
+      data: { value: "" },
     });
   });
 

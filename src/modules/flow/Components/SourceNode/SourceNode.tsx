@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Handle, Position, useReactFlow } from "@xyflow/react";
 import { SourceNodeContainer, SourceInputContainer } from "./SourceNode.styled";
-import type { SourceNodeType } from "./SourceNode.types";
+import type { SourceNodeType } from "@/modules/flow/domain";
 import type { NodeProps } from "@xyflow/react";
 
 export const SourceNode = ({ data, id, selected }: NodeProps<SourceNodeType>) => {

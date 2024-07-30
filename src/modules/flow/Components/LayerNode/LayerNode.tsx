@@ -1,6 +1,6 @@
 import { Handle, Position } from "@xyflow/react";
 import { NodeCardContainer } from "./LayerNode.styled";
-import type { LayerNodeType } from "./LayerNode.types";
+import type { LayerNodeType } from "@/modules/flow/domain";
 import type { NodeProps } from "@xyflow/react";
 
 export const LayerNode = ({ selected }: NodeProps<LayerNodeType>) => {
