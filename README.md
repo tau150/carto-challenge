@@ -1,30 +1,81 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# How to run the project locally
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+<br>
 
-## Expanding the ESLint configuration
+### Configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+<br>
 
-- Configure the top-level `parserOptions` property like this:
+- Create a .env.local file with the following content
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+
+Reference: https://www.mapbox.com/
+```
+VITE_MAP_BOX_API_KEY=your-map-box-key
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+```
+  npm install
+  npm start
+```
+
+<br><br>
+
+## Test
+
+To run tests and check coverage, use:
+<br>
+```
+  npm run test
+  npm run coverage
+```
+<br><br>
+
+
+## Approach
+
+The idea was to keep the challenge as simple as possible while providing a solid structure for future implementations. With this in mind, I defined module folders containing everything each module needs to work properly, such as components, views, domain models, and hooks. I always try to keep the folders scoped. For example, if there is a component or hook designed to work in a specific component, you will find an inner folder called "components" or "hooks" within that component's folder.
+
+
+
+<br><br>
+
+## Data fetching, Layer building, and cache
+
+For data fetching, I implemented a rudimentary cache to avoid refetching resources that were already fetched in the past. This could be handled better with a library like TanStack Query, for example. However, I decided not to install this extra library for the challenge.
+I tried to cache the generated layers to avoid recreating them if the data was the same. I noticed that intersections could take some time and are expensive. But for some reason, I encountered some errors when these layers were applied to the map.
+
+<br><br>
+
+## Styles
+
+I am using styled-components because it is simple and flexible. I think for the scope of the exercise, it is more than enough. However, if performance is crucial in the real project and the project would have many styles applied, other options might be better.
+
+
+<br><br>
+
+## Linting
+
+I have set some ESLint rules to maintain a consistent style, but this is really opinionated and can be customized to suit the development team's preferences.
+
+
+<br><br>
+
+
+## Possible improvements
+
+As mentioned before, the cache could be improved. Probably, the performance of the map and how it loads the layers could also be enhanced. This is something I should research further.
+Surely, there are points to improve around the map and the flow. This is my first time using React Flow and DeckGL, so I imagine things could be made better.
+
+
+<br><br>
+
+
+## Assignment feedback
+
+The assignment was really fun. I think it is not an easy one for someone who hadn't worked with these specific libraries in the past, like me. It takes some time to understand how things work and requires some research in the libraries' documentation.
+It was nice to learn something new.
+
+<br><br>
