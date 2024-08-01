@@ -21,6 +21,12 @@ export const NodeCard = ({ nodeType, children }: PropsWithChildren<Props>) => {
       onDragStart={(event) => onDragStart(event, nodeType)}
     >
       <span className={pointerClassName[nodeType]} />
+      {nodeType === NodeType.INTERSECTION && (
+        <>
+          <span className={pointerClassName[nodeType] + "-left"} />
+          <span className={pointerClassName[nodeType] + "-right"} />
+        </>
+      )}
       <p>{textContent[nodeType]}</p>
       {children}
     </NodeCardContainer>

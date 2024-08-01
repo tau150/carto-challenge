@@ -22,5 +22,19 @@ export const NodeCardContainer = styled.div`
     &.right {
       right: -14px;
     }
+
+    &.double-left {
+      left: -14px;
+      top: calc(50% - 35%);
+    }
+
+    &.double-left-left {
+      left: -14px;
+      top: calc(50% + 25%);
+    }
+
+    &.double-left-right {
+      right: -14px;
+    }
   }
 `;

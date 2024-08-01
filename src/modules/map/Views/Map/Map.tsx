@@ -1,23 +1,25 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DeckGL from "@deck.gl/react";
 import { Map as ReactMap } from "react-map-gl";
 import toast from "react-simple-toasts";
 import { ImSpinner7 } from "react-icons/im";
+import { Layer } from "deck.gl";
 import { MapContainer, ButtonContainer, LoadingContainer } from "./Map.styled";
 import { MAP_STYLE, INITIAL_VIEW_STATE, BASE_ERRORS_MESSAGE } from "./Map.constants";
-import { getLayers, getSources, getTooltip } from "./Map.utils";
+import { getLayersCollection, getTooltip } from "./Map.utils";
 import { useFetchSources } from "./hooks/useFetchSources";
 import { Routes } from "@/router";
 import { useFlowData } from "@/hooks";
 import { Button } from "@/Components";
 
 export const Map = () => {
-  const navigate = useNavigate();
-  const { flowData } = useFlowData();
+  const [layers, setLayers] = useState<Layer[]>([]);
+  const [isProcessingLayers, setIsProcessingLayers] = useState(true);
+  const { collectionId, sources } = useFlowData();
 
-  const sources = useMemo(() => getSources(flowData), [flowData]);
-  const { data, isLoading, errors } = useFetchSources(sources);
+  const navigate = useNavigate();
+  const { data, isLoading: isLoadingResources, errors } = useFetchSources(sources, collectionId);
 
   useEffect(() => {
     if (errors.length > 0) {
@@ -28,15 +30,22 @@ export const Map = () => {
     }
   }, [errors]);
 
-  if (isLoading || !data) {
+  useEffect(() => {
+    if (data) {
+      const generatedLayers = getLayersCollection(data);
+
+      setIsProcessingLayers(false);
+      setLayers(generatedLayers as Layer[]);
+    }
+  }, [data]);
+
+  if (isLoadingResources || isProcessingLayers) {
     return (
       <LoadingContainer data-testid="map-loader">
         <ImSpinner7 />
       </LoadingContainer>
     );
   }
-
-  const layers = getLayers(data);
 
   const handleGoToFlowClick = () => {
     navigate(Routes.FLOW);

@@ -1,84 +1,103 @@
-import { Edge } from "@xyflow/react";
-import { FeatureCollection } from "geojson";
-import { GeoJsonLayer, IconLayer, PickingInfo } from "deck.gl";
-import { isValidUrl, getSources, getLayers, getTooltip } from "../Map.utils";
-import type { FlowData } from "@/contexts";
-import type { AvailableNodes } from "@/modules/flow/domain";
-describe("isValidUrl", () => {
-  it("should return true for a valid URL", () => {
-    expect(isValidUrl("https://www.example.com")).toBe(true);
-  });
+import { GeoJsonLayer, IconLayer, PathLayer, PickingInfo } from "deck.gl";
+import { getLayersCollection, getTooltip } from "../Map.utils";
+import { DataToStore } from "../hooks/useFetchSources";
 
-  it("should return false for an invalid URL", () => {
-    expect(isValidUrl("not-a-valid-url")).toBe(false);
-  });
-
-  it("should return false for an empty string", () => {
-    expect(isValidUrl("")).toBe(false);
-  });
-});
-
-describe("getSources", () => {
-  const flowData: FlowData = {
-    nodes: [
-      { id: "1", data: { value: "https://node1.com" }, position: { y: 100 } },
-      { id: "2", position: { y: 200 } },
-      { id: "3", data: { value: "https://node2.com" }, position: { y: 100 } },
-      { id: "4", position: { y: 400 } },
-    ] as AvailableNodes,
-    edges: [
-      { source: "1", target: "2" },
-      { source: "3", target: "4" },
-    ] as Edge[],
-  };
-
-  it("should return sorted URLs based on yTargetPosition", () => {
-    const result = getSources(flowData);
-
-    expect(result).toEqual(["https://node1.com", "https://node2.com"]);
-  });
-});
-
-describe("getLayers", () => {
-  const mockData: FeatureCollection[] = [
+describe("getLayersCollection", () => {
+  const mockData: DataToStore[] = [
     {
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          geometry: { type: "Point", coordinates: [0, 0] },
-          properties: {},
-        },
-      ],
+      data: {
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            geometry: { type: "Point", coordinates: [0, 0] },
+            properties: {},
+          },
+        ],
+      },
+      combinationRef: undefined,
     },
     {
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          geometry: {
-            type: "Polygon",
-            coordinates: [
-              [
-                [0, 0],
-                [1, 1],
-                [1, 0],
-                [0, 0],
-              ],
-            ],
+      data: {
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            geometry: {
+              type: "LineString",
+              coordinates: [
+                [[0] as unknown as [number, number], [0] as unknown as [number]],
+              ] as unknown as number[][],
+            },
+            properties: {},
           },
-          properties: {},
-        },
-      ],
+        ],
+      },
+      combinationRef: undefined,
+    },
+    {
+      data: {
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            geometry: {
+              type: "MultiPolygon",
+              coordinates: [
+                [[0, 1] as unknown as [number, number], [0, 6] as unknown as [number, number]],
+              ] as unknown as number[][][][],
+            },
+            properties: {},
+          },
+        ],
+      },
+    },
+    {
+      data: {
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            geometry: {
+              type: "MultiPolygon",
+              coordinates: [
+                [[0, 1] as unknown as [number, number], [0, 6] as unknown as [number, number]],
+              ] as unknown as number[][][][],
+            },
+            properties: {},
+          },
+        ],
+      },
+      combinationRef: "111",
+    },
+    {
+      data: {
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            geometry: {
+              type: "MultiPolygon",
+              coordinates: [
+                [[0, 1] as unknown as [number, number], [0, 6] as unknown as [number, number]],
+              ] as unknown as number[][][][],
+            },
+            properties: {},
+          },
+        ],
+      },
+      combinationRef: "111",
     },
   ];
 
   it("should return layers for different geometries", () => {
-    const layers = getLayers(mockData);
+    const layers = getLayersCollection(mockData);
 
-    expect(layers.length).toBe(2);
+    expect(layers.length).toBe(4);
     expect(layers[0]).toBeInstanceOf(IconLayer);
-    expect(layers[1]).toBeInstanceOf(GeoJsonLayer);
+    expect(layers[1]).toBeInstanceOf(PathLayer);
+    expect(layers[2]).toBeInstanceOf(GeoJsonLayer);
+    expect(layers[3]).toBeInstanceOf(GeoJsonLayer);
   });
 });
 

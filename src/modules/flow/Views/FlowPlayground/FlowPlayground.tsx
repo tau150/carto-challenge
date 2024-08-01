@@ -12,6 +12,7 @@ export const FlowPlayground = () => {
           <NodesContainer>
             <SourceNodeCard />
             <NodeCard nodeType={NodeType.LAYER} />
+            <NodeCard nodeType={NodeType.INTERSECTION} />
           </NodesContainer>
         </SidePanel>
         <FlowContentContainer>

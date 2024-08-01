@@ -15,6 +15,7 @@ export const App = () => {
           <img alt="Carto logo" className="logo react" src={cartoLogo} />
         </LogoContainer>
       </header>
+
       <FlowDataProvider>
         <Router />
       </FlowDataProvider>

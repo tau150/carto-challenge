@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { FeatureCollection } from "geojson";
-import { isValidUrl } from "../Map.utils";
+import type { UrlStore } from "../Map.types";
+import { isValidUrl } from "@/utils";
 
 interface SourceError {
   url: string;
@@ -8,66 +9,111 @@ interface SourceError {
 }
 
 interface UseFetchSourcesReturn {
-  data: FeatureCollection[];
+  data: DataToStore[];
   errors: SourceError[];
   isLoading: boolean;
+  cacheHash?: string;
 }
 
-let cache: Record<string, FeatureCollection[]> = {};
+export type DataToStore = { data: FeatureCollection; combinationRef?: string };
 
-export const useFetchSources = (sourcesList: string[]): UseFetchSourcesReturn => {
-  const [data, setData] = useState<FeatureCollection[]>([]);
+const fetchGeoJson = async (url: string): Promise<FeatureCollection> => {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error(`Error in the URL: ${url}`);
+  }
+
+  const result = await response.json();
+
+  if (result?.type !== "FeatureCollection") {
+    throw new Error(`Invalid GeoJSON format for URL: ${url}`);
+  }
+
+  return result;
+};
+
+interface CacheStore {
+  [key: string]: {
+    results: DataToStore[];
+    errors: SourceError[];
+  };
+}
+
+let cache: CacheStore = {};
+
+export const resetCache = () => {
+  cache = {};
+};
+
+export const useFetchSources = (
+  sourcesList: string[] | UrlStore[],
+  collectionId: string,
+): UseFetchSourcesReturn => {
+  const [data, setData] = useState<DataToStore[]>([]);
   const [errors, setErrors] = useState<SourceError[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      const results: FeatureCollection[] = [];
+      const results: DataToStore[] = [];
       const fetchErrors: SourceError[] = [];
 
       setIsLoading(true);
-      const uniqueUrlsIdentifier = sourcesList.join("-");
 
-      if (cache[uniqueUrlsIdentifier]) {
-        setData(cache[uniqueUrlsIdentifier]);
+      if (cache[collectionId]) {
+        setData(cache[collectionId].results);
+        setErrors(cache[collectionId].errors);
         setIsLoading(false);
 
         return;
       }
 
       const fetchPromises = sourcesList.map(async (url, index) => {
-        if (isValidUrl(url)) {
+        const isUrlForCombine = typeof url === "object";
+        let combinationRef;
+        let urlValue;
+
+        if (isUrlForCombine) {
+          const [reference, urlObject] = Object.entries(url)[0];
+
+          urlValue = urlObject.url;
+          combinationRef = reference;
+        } else {
+          urlValue = url;
+        }
+
+        if (isValidUrl(urlValue)) {
           try {
-            const response = await fetch(url);
+            const json = await fetchGeoJson(urlValue);
 
-            if (!response.ok) {
-              throw new Error(`Error in the URL: ${url}`);
-            }
-            const json = await response.json();
+            const dataToStore = { data: json, combinationRef, order: index };
 
-            results[index] = json;
-            cache = { ...cache, [uniqueUrlsIdentifier]: results };
+            results[index] = dataToStore;
           } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Something went wrong";
 
-            fetchErrors.push({ url, error: errorMessage });
+            fetchErrors.push({ url: urlValue, error: errorMessage });
           }
         } else {
           const errorMessage = `invalid URL: ${url}`;
 
-          fetchErrors.push({ url, error: errorMessage });
+          fetchErrors.push({ url: urlValue, error: errorMessage });
         }
       });
 
       await Promise.allSettled(fetchPromises);
+      cache[collectionId] = { results, errors: fetchErrors };
 
       setIsLoading(false);
       setData(results);
       setErrors(fetchErrors);
     };
 
-    fetchData();
-  }, [sourcesList]);
+    if (sourcesList.length > 0) {
+      fetchData();
+    }
+  }, [collectionId, sourcesList]);
 
   return { data, errors, isLoading };
 };
