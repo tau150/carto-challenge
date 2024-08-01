@@ -22,15 +22,20 @@ import { useFlowHandlers } from "./hooks/useFlowHandlers";
 import { Routes } from "@/router";
 import { LayerNode } from "@/modules/flow/Components/LayerNode";
 import { SourceNode } from "@/modules/flow/Components/SourceNode";
+import { IntersectionNode } from "@/modules/flow/Components/IntersectionNode";
 import { NodeType } from "@/modules/flow/domain";
 import { ControlsPanel } from "@/modules/flow/Components/Flow/Components/ControlsPanel";
 import { useInterval, useFlowData } from "@/hooks";
 import "@xyflow/react/dist/style.css";
 
-const nodeTypes = { [NodeType.LAYER]: LayerNode, [NodeType.SOURCE]: SourceNode };
+const nodeTypes = {
+  [NodeType.LAYER]: LayerNode,
+  [NodeType.SOURCE]: SourceNode,
+  [NodeType.INTERSECTION]: IntersectionNode,
+};
 
 export const FlowContent = () => {
-  const { setFlowData, flowData, saveEdges, saveNodes } = useFlowData();
+  const { setFlowData, flowData, saveCollection } = useFlowData();
   const [nodes, setNodes, onNodesChange] = useNodesState(flowData.nodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(flowData.edges);
   const { onConnect, onDragOver, onDrop } = useFlowHandlers({ setEdges, setNodes });
@@ -43,8 +48,8 @@ export const FlowContent = () => {
       const updatedNodes = nodes.map((node) => ({ ...node, selected: false }));
 
       setNodes(updatedNodes);
-      saveNodes(updatedNodes);
-      saveEdges(edges);
+      saveCollection(edges, updatedNodes);
+
       toast(isAutoSave ? SUCCESS_AUTO_SAVE_MESSAGE : SUCCESS_SAVE_MESSAGE);
     } catch (_e) {
       toast(ERROR_SAVE_MESSAGE);

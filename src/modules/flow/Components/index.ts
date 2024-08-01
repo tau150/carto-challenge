@@ -4,3 +4,4 @@ export * from "./SourceNode";
 export * from "./SidePanel";
 export * from "./SourceNodeCard";
 export * from "./NodeCard";
+export * from "./IntersectionNode";

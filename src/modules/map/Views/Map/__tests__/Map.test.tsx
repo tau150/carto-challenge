@@ -3,7 +3,7 @@ import toast from "react-simple-toasts";
 import { Mock } from "vitest";
 import { Map } from "../Map";
 import { useFetchSources } from "../hooks/useFetchSources";
-import { getSources, getLayers, getTooltip } from "../Map.utils";
+import { getLayersCollection, getTooltip } from "../Map.utils";
 import { render, screen, waitFor, userEvent } from "@/utils/testUtils";
 import { useFlowData } from "@/hooks";
 import { Routes } from "@/router";
@@ -53,8 +53,7 @@ describe("Map", () => {
       isLoading: true,
       errors: [],
     });
-    (getSources as Mock).mockReturnValue(["https://node1.com", "https://node2.com"]);
-    (getLayers as Mock).mockReturnValue([]);
+    (getLayersCollection as Mock).mockReturnValue([]);
     (getTooltip as Mock).mockReturnValue({});
     vi.clearAllMocks();
   });
@@ -92,7 +91,7 @@ describe("Map", () => {
     render(<Map />);
 
     await waitFor(() => {
-      expect(getLayers).toHaveBeenCalled();
+      expect(getLayersCollection).toHaveBeenCalled();
       expect(screen.getByRole("button", { name: /flow/i })).toBeInTheDocument();
     });
   });

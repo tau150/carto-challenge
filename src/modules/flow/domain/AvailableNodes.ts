@@ -1,6 +1,7 @@
 import type { LayerNodeType } from "./LayerNode";
 import type { SourceNodeType } from "./SourceNode";
+import type { IntersectionNodeType } from "./IntersectionNode";
 
-type AvailableNode = LayerNodeType | SourceNodeType;
+export type AvailableNode = LayerNodeType | SourceNodeType | IntersectionNodeType;
 
 export type AvailableNodes = AvailableNode[];
