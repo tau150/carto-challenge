@@ -51,8 +51,10 @@ export const FlowDataProvider = ({ children }: PropsWithChildren) => {
   );
 
   useEffect(() => {
-    loadSources();
-  }, [loadSources]);
+    if (sources.length === 0) {
+      loadSources();
+    }
+  }, [loadSources, sources.length]);
 
   const memoValue = useMemo(
     () => ({

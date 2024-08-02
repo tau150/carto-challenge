@@ -17,11 +17,13 @@ interface UseFetchSourcesReturn {
 
 export type DataToStore = { data: FeatureCollection; combinationRef?: string };
 
+const ERROR_FETCHING_MESSAGE = "Error fetching";
+
 const fetchGeoJson = async (url: string): Promise<FeatureCollection> => {
   const response = await fetch(url);
 
   if (!response.ok) {
-    throw new Error(`Error in the URL: ${url}`);
+    throw new Error(`${ERROR_FETCHING_MESSAGE}: ${url}`);
   }
 
   const result = await response.json();
@@ -58,6 +60,7 @@ export const useFetchSources = (
     const fetchData = async () => {
       const results: DataToStore[] = [];
       const fetchErrors: SourceError[] = [];
+      const resourceErrors: SourceError[] = [];
 
       setIsLoading(true);
 
@@ -93,21 +96,30 @@ export const useFetchSources = (
           } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Something went wrong";
 
-            fetchErrors.push({ url: urlValue, error: errorMessage });
+            const isFetchError = errorMessage.includes(ERROR_FETCHING_MESSAGE); // TODO: replace this for a specific error type
+
+            isFetchError
+              ? fetchErrors.push({ url: urlValue, error: errorMessage })
+              : resourceErrors.push({ url: urlValue, error: errorMessage });
           }
         } else {
           const errorMessage = `invalid URL: ${url}`;
 
-          fetchErrors.push({ url: urlValue, error: errorMessage });
+          resourceErrors.push({ url: urlValue, error: errorMessage });
         }
       });
 
       await Promise.allSettled(fetchPromises);
-      cache[collectionId] = { results, errors: fetchErrors };
+
+      if (fetchErrors.length === 0) {
+        cache[collectionId] = { results, errors: resourceErrors };
+      }
 
       setIsLoading(false);
-      setData(results);
-      setErrors(fetchErrors);
+      const nonEmptyResults = results.filter((res) => res !== null && res !== undefined);
+
+      setData(nonEmptyResults);
+      setErrors([...fetchErrors, ...resourceErrors]);
     };
 
     if (sourcesList.length > 0) {
