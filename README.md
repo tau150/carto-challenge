@@ -21,6 +21,17 @@ VITE_MAP_BOX_API_KEY=your-map-box-key
   npm start
 ```
 
+<br>
+
+Here there are some sources you can use to play around:
+
+```
+https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/san-francisco.geojson
+https://raw.githubusercontent.com/dwillis/nyc-maps/master/boroughs.geojson
+https://raw.githubusercontent.com/codeforamerica/click_that_hood/master/public/data/chicago.geojson
+https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart.geo.json
+```
+
 <br><br>
 
 ## Test
@@ -52,6 +63,7 @@ I tried to cache the generated layers to avoid recreating them if the data was t
 ## Styles
 
 I am using styled-components because it is simple and flexible. I think for the scope of the exercise, it is more than enough. However, if performance is crucial in the real project and the project would have many styles applied, other options might be better.
+I didn't take care about responsive design for this assignment. Because that would take more time, and this app seems to be thinking to work in desktop.
 
 
 <br><br>
