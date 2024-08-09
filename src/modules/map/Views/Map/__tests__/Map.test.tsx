@@ -75,8 +75,12 @@ describe("Map", () => {
     render(<Map />);
 
     await waitFor(() => {
+      expect(toast).toHaveBeenCalledTimes(2);
       expect(toast).toHaveBeenCalledWith(
-        "There were some errors and some layers could not be loaded, Error 1, Error 2",
+        "There were some errors and some layers could not be loaded, Error 1",
+      );
+      expect(toast).toHaveBeenCalledWith(
+        "There were some errors and some layers could not be loaded, Error 2",
       );
     });
   });

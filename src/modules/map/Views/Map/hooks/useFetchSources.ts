@@ -92,7 +92,7 @@ export const useFetchSources = (
 
             const dataToStore = { data: json, combinationRef, order: index };
 
-            results[index] = dataToStore;
+            results.push(dataToStore);
           } catch (error) {
             const errorMessage = error instanceof Error ? error.message : "Something went wrong";
 
@@ -103,7 +103,8 @@ export const useFetchSources = (
               : resourceErrors.push({ url: urlValue, error: errorMessage });
           }
         } else {
-          const errorMessage = `invalid URL: ${url}`;
+          const urlDescription = typeof url === "string" ? url : url[Object.keys(url)[0]].url;
+          const errorMessage = `invalid URL: ${urlDescription}`;
 
           resourceErrors.push({ url: urlValue, error: errorMessage });
         }
@@ -116,9 +117,8 @@ export const useFetchSources = (
       }
 
       setIsLoading(false);
-      const nonEmptyResults = results.filter((res) => res !== null && res !== undefined);
 
-      setData(nonEmptyResults);
+      setData(results);
       setErrors([...fetchErrors, ...resourceErrors]);
     };
 

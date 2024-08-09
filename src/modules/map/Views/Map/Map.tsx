@@ -23,10 +23,13 @@ export const Map = () => {
 
   useEffect(() => {
     if (errors.length > 0) {
-      const errorsToShow = errors.map((error) => error.error).join(", ");
-      const message = `${BASE_ERRORS_MESSAGE}, ${errorsToShow}`;
+      const errorsToShow = errors.map((error) => error.error);
 
-      toast(message);
+      errorsToShow.forEach((error) => {
+        const message = `${BASE_ERRORS_MESSAGE}, ${error}`;
+
+        toast(message);
+      });
     }
   }, [errors]);
 
