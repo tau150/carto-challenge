@@ -119,6 +119,26 @@ const generateLayers = (processedLayers: (DataToStore | DataToStore[])[]) => {
   });
 };
 
+const isCombinable = (currentItem: DataToStore, nextItem?: DataToStore): boolean => {
+  if (!nextItem) {
+    return false;
+  }
+
+  const isAllowedIntersectionInCurrentItem = isAllowedIntersection(
+    currentItem.data.features[0].geometry.type,
+  );
+
+  const isAllowedIntersectionInNextItem = isAllowedIntersection(
+    nextItem.data.features[0].geometry.type,
+  );
+
+  return (
+    currentItem?.combinationRef === nextItem.combinationRef &&
+    isAllowedIntersectionInCurrentItem &&
+    isAllowedIntersectionInNextItem
+  );
+};
+
 export const getLayersCollection = (layersData: DataToStore[]) => {
   const result: (DataToStore | DataToStore[])[] = [];
   let tempArray: DataToStore[] = [];
@@ -126,14 +146,9 @@ export const getLayersCollection = (layersData: DataToStore[]) => {
   for (let i = 0; i < layersData.length; i++) {
     const currentItem = layersData[i];
     const nextItem = layersData[i + 1];
+    const areLayersCombinables = isCombinable(currentItem, nextItem);
 
-    if (
-      currentItem.combinationRef &&
-      nextItem &&
-      currentItem.combinationRef === nextItem.combinationRef &&
-      isAllowedIntersection(currentItem.data.features[0].geometry.type) &&
-      isAllowedIntersection(nextItem.data.features[0].geometry.type)
-    ) {
+    if (areLayersCombinables) {
       tempArray.push(currentItem);
       tempArray.push(nextItem);
       i++;
